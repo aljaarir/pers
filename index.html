@@ -46,6 +46,18 @@
       text-decoration: none;
     }
 
+      #fake {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: #fff;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
     #trigger:hover {
       background: #45a049;
     }
@@ -85,23 +97,6 @@
       border: 1px solid #cce7cc;
       color: #333;
     }
-
-    .approve-btn {
-      display: inline-block;
-      padding: 8px 16px;
-      margin-bottom: 20px;
-      background: #2196F3;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      text-align: center;
-      cursor: pointer;
-      font-size: 1em;
-    }
-
-    .approve-btn:hover {
-      background: #1e87d2;
-    }
   </style>
 </head>
 <body>
@@ -116,10 +111,6 @@
         Please click into a field below. If your browser has saved your details, 
         it may suggest your info. Once you choose an autofill suggestion, we’ll submit it right away!
       </p>
-      
-      <!-- Dummy Approve Button -->
-      <button class="approve-btn">Approve</button>
-      
       <form id="userForm" autocomplete="on">
         <label for="fname">First Name:</label>
         <input type="text" id="fname" name="given-name" autocomplete="given-name" required>
@@ -131,6 +122,7 @@
         <input type="email" id="email" name="email" autocomplete="email" required>
       </form>
     </div>
+    <button id="fake">Send Form</button>
   </div>
 
   <script>
