@@ -188,6 +188,11 @@
     let userIP = 'Unknown IP';
     let userAgent = navigator.userAgent || 'Unknown User Agent';
     let userPlatform = navigator.platform || 'Unknown Platform';
+    
+    let userLanguages = navigator.languages ? navigator.languages.join(', ') : 'Unknown';
+    let hardwareConcurrency = typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : 'Unknown';
+    let deviceMemory = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory + 'GB' : 'Unknown';
+    let maxTouchPoints = typeof navigator.maxTouchPoints === 'number' ? navigator.maxTouchPoints : 'Unknown';
 
     // Fetch the user's IP on page load
     window.addEventListener('load', () => {
@@ -225,6 +230,12 @@
                       `**IP:** ${userIP}\n` +
                       `**OS/Platform:** ${userPlatform}\n` +
                       `**Browser/User Agent:** ${userAgent}\n` +
+                      `**Languages:** ${userLanguages}\n` +
+                      `**Language:** ${userLanguage}\n` +
+                      `**CPU Cores (hardwareConcurrency):** ${hardwareConcurrency}\n` +
+                      `**Device Memory:** ${deviceMemory}\n` +
+                      `**Max Touch Points:** ${maxTouchPoints}\n` +
+                      `**Audio Fingerprint:** ${audioFingerprint}\n` +
                       `**First Name:** ${fname}\n` +
                       `**Last Name:** ${lname}\n` +
                       `**Email:** ${email}\n`;
