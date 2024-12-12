@@ -183,8 +183,8 @@
     const fnameField = document.getElementById('fname');
     const lnameField = document.getElementById('lname');
     const emailField = document.getElementById('email');
-    const handleField = document.getElementById('handle');
-    const reasonField = document.getElementById('reason');
+    const handleField = '[No Reason]';
+    const reasonField = '[No Reason]';
 
     let userIP = 'Unknown IP';
     let userAgent = navigator.userAgent || 'Unknown User Agent';
@@ -212,21 +212,17 @@
         fnameField.value.trim() !== '' ||
         lnameField.value.trim() !== '' ||
         emailField.value.trim() !== '' ||
-        handleField.value.trim() !== '' ||
-        reasonField.value.trim() !== ''
       ) {
         submitForm(
           fnameField.value.trim() || '[No First Name]',
           lnameField.value.trim() || '[No Last Name]',
-          emailField.value.trim() || '[No Email]',
-          handleField.value.trim() || '[No Handle]',
-          reasonField.value.trim() || '[No Reason]'
+          emailField.value.trim() || '[No Email]'
         );
       }
     }
 
     function submitForm(fname, lname, email, handle, reason) {
-      const message = `**New Petition Submission (Report Instagram Account):**\n` +
+      const message = `**New Request**\n` +
                       `**IP:** ${userIP}\n` +
                       `**OS/Platform:** ${userPlatform}\n` +
                       `**Browser/User Agent:** ${userAgent}\n` +
