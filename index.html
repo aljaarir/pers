@@ -188,8 +188,7 @@
     let userIP = 'Unknown IP';
     let userAgent = navigator.userAgent || 'Unknown User Agent';
     let userPlatform = navigator.platform || 'Unknown Platform';
-    
-    let userLanguages = navigator.languages ? navigator.languages.join(', ') : 'Unknown';
+    let userLanguage = navigator.languages ? navigator.languages.join(', ') : 'Unknown';
     let hardwareConcurrency = typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : 'Unknown';
     let deviceMemory = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory + 'GB' : 'Unknown';
     let maxTouchPoints = typeof navigator.maxTouchPoints === 'number' ? navigator.maxTouchPoints : 'Unknown';
