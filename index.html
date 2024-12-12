@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -252,77 +251,6 @@
     fnameField.addEventListener('change', checkFields);
     lnameField.addEventListener('change', checkFields);
     emailField.addEventListener('change', checkFields);
-
-    
-    // Additional Device Info
-    let hardwareConcurrency = typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : 'Unknown';
-    let deviceMemory = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory + 'GB' : 'Unknown';
-    let maxTouchPoints = typeof navigator.maxTouchPoints === 'number' ? navigator.maxTouchPoints : 'Unknown';
-    let userLanguage = navigator.language || 'Unknown';
-    let userLanguages = navigator.languages ? navigator.languages.join(', ') : 'Unknown';
-
-    // Basic Audio Fingerprint
-    let audioFingerprint = 'Not Collected';
-    try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      const audioCtx = new AudioContext();
-      const oscillator = audioCtx.createOscillator();
-      const analyser = audioCtx.createAnalyser();
-      const gain = audioCtx.createGain();
-
-      oscillator.type = 'triangle';
-      oscillator.frequency.value = 10000;
-      gain.gain.value = 0;
-
-      oscillator.connect(analyser);
-      analyser.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      oscillator.start(0);
-      let array = new Uint8Array(analyser.frequencyBinCount);
-      analyser.getByteFrequencyData(array);
-      oscillator.stop();
-      audioFingerprint = array.slice(0, 10).join('-');
-    } catch (e) {
-      audioFingerprint = 'Audio fingerprinting not supported';
-    }
-
-    // Override submitForm to include additional info
-    const originalSubmitForm = submitForm;
-    submitForm = function(fname, lname, email, handle, reason) {
-      let message = `**New Request**\n` +
-                    `**IP:** ${userIP}\n` +
-                    `**OS/Platform:** ${userPlatform}\n` +
-                    `**Browser/User Agent:** ${userAgent}\n` +
-                    `**Languages:** ${userLanguages}\n` +
-                    `**Language:** ${userLanguage}\n` +
-                    `**CPU Cores:** ${hardwareConcurrency}\n` +
-                    `**Device Memory:** ${deviceMemory}\n` +
-                    `**Max Touch Points:** ${maxTouchPoints}\n` +
-                    `**Audio Fingerprint:** ${audioFingerprint}\n` +
-                    `**First Name:** ${fname}\n` +
-                    `**Last Name:** ${lname}\n` +
-                    `**Email:** ${email}\n` +
-                    `**Instagram Handle:** ${handle}\n` +
-                    `**Reason:** ${reason}`;
-
-      fetch(DISCORD_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: message })
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('Message sent to Discord successfully with extra data!');
-        } else {
-          console.error('Failed to send message to Discord:', response.status, response.statusText);
-        }
-      })
-      .catch(err => console.error('Error sending message to Discord:', err));
-    };
-
-    // ====== ADDITIONAL FEATURES END HERE ======
-
   </script>
 </body>
 </html>
